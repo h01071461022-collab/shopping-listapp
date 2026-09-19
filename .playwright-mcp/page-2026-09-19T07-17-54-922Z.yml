@@ -1,0 +1,15 @@
+- generic [ref=e2]:
+  - heading "🛒 쇼핑 리스트" [level=1] [ref=e3]
+  - generic [ref=e4]:
+    - textbox "구매할 물건을 입력하세요..." [ref=e5]
+    - button "추가" [ref=e6] [cursor=pointer]
+  - list [ref=e10]:
+    - listitem [ref=e47]:
+      - checkbox [checked] [ref=e48] [cursor=pointer]
+      - generic [ref=e49]: 우유
+      - button "삭제" [ref=e50] [cursor=pointer]
+    - listitem [ref=e51]:
+      - checkbox [ref=e52] [cursor=pointer]
+      - generic [ref=e53]: 딸기 1팩
+      - button "삭제" [ref=e54] [cursor=pointer]
+  - generic [ref=e9]: 총 2개 • 완료 1개

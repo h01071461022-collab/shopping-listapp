@@ -1,0 +1,27 @@
+- generic [ref=f1e2]:
+  - heading "🛒 쇼핑 리스트" [level=1] [ref=f1e3]
+  - generic [ref=f1e4]:
+    - textbox "구매할 물건을 입력하세요..." [active] [ref=f1e5]
+    - button "추가" [ref=f1e6] [cursor=pointer]
+  - list [ref=f1e8]:
+    - listitem [ref=f1e46]:
+      - checkbox [checked] [ref=f1e47] [cursor=pointer]
+      - generic [ref=f1e48]: 우유
+      - button "삭제" [ref=f1e49] [cursor=pointer]
+    - listitem [ref=f1e50]:
+      - checkbox [ref=f1e51] [cursor=pointer]
+      - generic [ref=f1e52]: 딸기 1팩
+      - button "삭제" [ref=f1e53] [cursor=pointer]
+    - listitem [ref=f1e54]:
+      - checkbox [ref=f1e55] [cursor=pointer]
+      - generic [ref=f1e56]: 빵
+      - button "삭제" [ref=f1e57] [cursor=pointer]
+    - listitem [ref=f1e58]:
+      - checkbox [ref=f1e59] [cursor=pointer]
+      - generic [ref=f1e60]: 치즈
+      - button "삭제" [ref=f1e61] [cursor=pointer]
+    - listitem [ref=f1e62]:
+      - checkbox [ref=f1e63] [cursor=pointer]
+      - generic [ref=f1e64]: 우유
+      - button "삭제" [ref=f1e65] [cursor=pointer]
+  - generic [ref=f1e17]: 총 5개 • 완료 1개

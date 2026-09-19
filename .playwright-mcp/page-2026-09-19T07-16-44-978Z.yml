@@ -1,0 +1,9 @@
+- generic [ref=e2]:
+  - heading "🛒 쇼핑 리스트" [level=1] [ref=e3]
+  - generic [ref=e4]:
+    - textbox "구매할 물건을 입력하세요..." [ref=e5]
+    - button "추가" [ref=e6] [cursor=pointer]
+  - generic [ref=e7]:
+    - list
+    - generic [ref=e8]: 추가된 항목이 없습니다
+  - generic [ref=e9]: 총 0개 • 완료 0개
