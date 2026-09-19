@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쇼핑 리스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -187,55 +188,98 @@
         const totalItemsSpan = document.getElementById('totalItems');
         const completedItemsSpan = document.getElementById('completedItems');
 
-        const STORAGE_KEY = 'shoppingList';
+        const SUPABASE_URL = 'https://gjbbggncoevagkbpfdhj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiYmJnZ25jb2V2YWdrYnBmZGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MzI3MDAsImV4cCI6MTg4NDQ5OTEwMH0.P0h3G5qQ8kL9mN2oP1r4sT5uV6wX7yZ8aB9cD0eF1gH';
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         class ShoppingListApp {
             constructor() {
-                this.items = this.loadItems();
+                this.items = [];
+                this.init();
+            }
+
+            async init() {
+                await this.loadItems();
                 this.render();
                 this.attachEventListeners();
             }
 
-            loadItems() {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                return stored ? JSON.parse(stored) : [];
+            async loadItems() {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('shopping_items')
+                        .select('*')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+                    this.items = data || [];
+                } catch (error) {
+                    console.error('Error loading items:', error);
+                    alert('아이템을 불러오는데 실패했습니다.');
+                }
             }
 
-            saveItems() {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items));
-            }
-
-            addItem(text) {
+            async addItem(text) {
                 if (!text.trim()) {
                     alert('물건 이름을 입력해주세요');
                     return;
                 }
 
-                const item = {
-                    id: Date.now(),
-                    text: text.trim(),
-                    completed: false
-                };
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('shopping_items')
+                        .insert([{ text: text.trim(), completed: false }])
+                        .select();
 
-                this.items.push(item);
-                this.saveItems();
-                this.render();
-                itemInput.value = '';
-                itemInput.focus();
+                    if (error) throw error;
+
+                    if (data && data[0]) {
+                        this.items.push(data[0]);
+                        this.render();
+                        itemInput.value = '';
+                        itemInput.focus();
+                    }
+                } catch (error) {
+                    console.error('Error adding item:', error);
+                    alert('아이템을 추가하는데 실패했습니다.');
+                }
             }
 
-            deleteItem(id) {
-                this.items = this.items.filter(item => item.id !== id);
-                this.saveItems();
-                this.render();
-            }
+            async deleteItem(id) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('shopping_items')
+                        .delete()
+                        .eq('id', id);
 
-            toggleItem(id) {
-                const item = this.items.find(item => item.id === id);
-                if (item) {
-                    item.completed = !item.completed;
-                    this.saveItems();
+                    if (error) throw error;
+
+                    this.items = this.items.filter(item => item.id !== id);
                     this.render();
+                } catch (error) {
+                    console.error('Error deleting item:', error);
+                    alert('아이템을 삭제하는데 실패했습니다.');
+                }
+            }
+
+            async toggleItem(id) {
+                const item = this.items.find(item => item.id === id);
+                if (!item) return;
+
+                try {
+                    const { error } = await supabaseClient
+                        .from('shopping_items')
+                        .update({ completed: !item.completed })
+                        .eq('id', id);
+
+                    if (error) throw error;
+
+                    item.completed = !item.completed;
+                    this.render();
+                } catch (error) {
+                    console.error('Error toggling item:', error);
+                    alert('아이템을 수정하는데 실패했습니다.');
                 }
             }
 
