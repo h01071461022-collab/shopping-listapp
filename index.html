@@ -189,9 +189,16 @@
         const completedItemsSpan = document.getElementById('completedItems');
 
         const SUPABASE_URL = 'https://gjbbggncoevagkbpfdhj.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiYmJnZ25jb2V2YWdrYnBmZGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MzI3MDAsImV4cCI6MTg4NDQ5OTEwMH0.P0h3G5qQ8kL9mN2oP1r4sT5uV6wX7yZ8aB9cD0eF1gH';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqYmJnZ25jb2V2YWdrYnBmZGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDE5MDAsImV4cCI6MjEwNTM3NzkwMH0.88OXBzAXulj8b1NLF7ZYeYI7ETiiF4Bn74EstUattpw';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabaseClient;
+
+        if (window.supabase) {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase client initialized successfully');
+        } else {
+            console.error('❌ Supabase library not loaded');
+        }
 
         class ShoppingListApp {
             constructor() {
@@ -227,13 +234,22 @@
                 }
 
                 try {
+                    if (!supabaseClient) {
+                        throw new Error('Supabase client not initialized');
+                    }
+
+                    console.log('Adding item:', text);
                     const { data, error } = await supabaseClient
                         .from('shopping_items')
                         .insert([{ text: text.trim(), completed: false }])
                         .select();
 
-                    if (error) throw error;
+                    if (error) {
+                        console.error('Supabase error:', error);
+                        throw error;
+                    }
 
+                    console.log('Item added successfully:', data);
                     if (data && data[0]) {
                         this.items.push(data[0]);
                         this.render();
@@ -242,7 +258,7 @@
                     }
                 } catch (error) {
                     console.error('Error adding item:', error);
-                    alert('아이템을 추가하는데 실패했습니다.');
+                    alert(`아이템 추가 실패: ${error.message || error}`);
                 }
             }
 
